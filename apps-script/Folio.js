@@ -50,7 +50,11 @@ function registrarCotizacion(payload) {
       ivaAplica,
       cot.observaciones || '',
       cot.registradoPor,
-      fechaRegistro
+      fechaRegistro,
+      cot.descripcionProyecto || '',
+      cot.incluye || '',
+      cot.excluye || '',
+      cot.notasAdicionales || ''
     ]);
 
     const shItems = sheet_(SHEET_ITEMS);

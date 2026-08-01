@@ -25,6 +25,10 @@ automáticamente `Setup.js` la primera vez que se ejecuta (no hace falta crearla
 | O | OBSERVACIONES | texto | |
 | P | REGISTRADO_POR | texto (enum) | Franco / Felipe / tercera persona |
 | Q | FECHA_REGISTRO | timestamp | Auto, generado por backend |
+| R | DESCRIPCION_PROYECTO | texto | Descripción general del trabajo (aparece en el documento) |
+| S | INCLUYE | texto | Alcance — qué incluye la cotización |
+| T | EXCLUYE | texto | Alcance — qué excluye la cotización |
+| U | NOTAS_ADICIONALES | texto | Notas que aparecen en el documento (distinto de OBSERVACIONES, que es de uso interno) |
 
 ## ITEMS_COTIZACION
 

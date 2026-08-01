@@ -72,14 +72,6 @@
         <label>Correo del contacto</label>
         <input id="correo" readonly>
       </div>
-      <div>
-        <label>Obra / proyecto</label>
-        <input id="proyecto" placeholder="Nombre del proyecto">
-      </div>
-      <div>
-        <label>Forma de pago</label>
-        <input id="formaPago" placeholder="Ej: 50% anticipo, 50% contra entrega">
-      </div>
     </div>
     <div class="grid" id="contactoNuevoFields" style="display:none; margin-top:10px;">
       <div>
@@ -94,6 +86,14 @@
         <label>Cargo / nota</label>
         <input id="contactoCargo">
       </div>
+    </div>
+    <div style="margin-top:14px;">
+      <label>Obra / proyecto</label>
+      <input id="proyecto" placeholder="Nombre del proyecto">
+    </div>
+    <div style="margin-top:10px;">
+      <label>Descripción del proyecto</label>
+      <textarea id="descripcionProyecto" rows="2" placeholder="Descripción general del trabajo a realizar"></textarea>
     </div>
   </section>
 
@@ -132,14 +132,39 @@
       <div><span>Neto parcial</span><span id="neto">$0</span></div>
       <div><span>Gastos generales</span><span id="gg">$0</span></div>
       <div><span>Utilidades</span><span id="ut">$0</span></div>
+      <div><span>Neto total</span><span id="netoTotal">$0</span></div>
       <div><span>IVA</span><span id="iva">$0</span></div>
       <div class="final"><span>Total a pagar</span><span id="total">$0</span></div>
     </div>
   </section>
 
   <section>
-    <h2 class="section-title">Observaciones</h2>
-    <textarea id="observaciones" rows="3" style="width:100%; font-family:inherit; font-size:13px; padding:7px 8px; border:1px solid #ddd; background:var(--bg-input); border-radius:3px;"></textarea>
+    <h2 class="section-title">Condiciones de pago</h2>
+    <textarea id="formaPago" rows="2" placeholder="Ej: 50% anticipo, 50% contra entrega"></textarea>
+  </section>
+
+  <section>
+    <h2 class="section-title">Alcance y exclusiones</h2>
+    <div class="grid">
+      <div>
+        <label>Incluye</label>
+        <textarea id="incluye" rows="3">• Materiales indicados en tabla</textarea>
+      </div>
+      <div>
+        <label>Excluye</label>
+        <textarea id="excluye" rows="3"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Notas adicionales</h2>
+    <textarea id="notasAdicionales" rows="2" placeholder="Notas que aparecerán en el documento"></textarea>
+  </section>
+
+  <section>
+    <h2 class="section-title">Observaciones (uso interno, no aparece en el documento)</h2>
+    <textarea id="observaciones" rows="2"></textarea>
   </section>
 
   <div class="firmas">

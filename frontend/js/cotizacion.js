@@ -9,6 +9,7 @@ function recalcular() {
   document.getElementById('neto').textContent = fmt(t.netoParcial);
   document.getElementById('gg').textContent = fmt(t.montoGG);
   document.getElementById('ut').textContent = fmt(t.montoUt);
+  document.getElementById('netoTotal').textContent = fmt(t.neto);
   document.getElementById('iva').textContent = fmt(t.iva);
   document.getElementById('total').textContent = fmt(t.total);
 }
@@ -50,10 +51,14 @@ function registrar() {
     contacto,
     cotizacion: {
       proyecto: document.getElementById('proyecto').value.trim(),
+      descripcionProyecto: document.getElementById('descripcionProyecto').value.trim(),
       fechaEmision: fechaEmision.toISOString(),
       vencimiento: vencimiento.toISOString(),
       estado: 'PENDIENTE',
       formaPago: document.getElementById('formaPago').value.trim(),
+      incluye: document.getElementById('incluye').value.trim(),
+      excluye: document.getElementById('excluye').value.trim(),
+      notasAdicionales: document.getElementById('notasAdicionales').value.trim(),
       gastosGeneralesPct: ggPct,
       utilidadesPct: utPct,
       ivaAplica,

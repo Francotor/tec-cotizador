@@ -16,6 +16,14 @@ function inicializarHojasControl() {
   Logger.log('Hojas de control listas.');
 }
 
+// Ejecutar UNA VEZ desde el editor (seleccionar esta función → Ejecutar) para que Google
+// pida autorizar el acceso a Drive — necesario para guardar los PDF de las Órdenes de Compra.
+// getOrCrearCarpetaAdjuntos_ termina en "_" y por eso no aparece directo en el menú de Ejecutar.
+function autorizarDrive() {
+  const carpeta = getOrCrearCarpetaAdjuntos_();
+  Logger.log('Permiso de Drive OK. Carpeta: ' + carpeta.getUrl());
+}
+
 function crearHojaSiNoExiste_(nombre, headers) {
   const ss = ss_();
   if (ss.getSheetByName(nombre)) return;

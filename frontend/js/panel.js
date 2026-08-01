@@ -76,6 +76,53 @@ function poblarSelectCotizaciones(selectId, soloAprobadas) {
   sel.innerHTML = (base ? base.outerHTML : '') + opciones;
 }
 
+function fechaCorta(v) {
+  if (!v) return '';
+  const d = new Date(v);
+  if (isNaN(d.getTime())) return String(v);
+  return d.toLocaleDateString('es-CL');
+}
+
+function clienteDeCot(nCot) {
+  const r = registro.find((x) => Number(x.N_COT) === Number(nCot));
+  return r ? `N°${r.N_COT} — ${r.CLIENTE}` : (nCot ? `N°${nCot}` : '—');
+}
+
+function renderTablaOC() {
+  document.getElementById('tablaOC').innerHTML = ordenesCompra.map((oc) => `
+    <tr>
+      <td>${clienteDeCot(oc.N_COT)}</td>
+      <td>${oc.N_OC_CLIENTE || ''}</td>
+      <td>${fechaCorta(oc.FECHA_RECEPCION)}</td>
+      <td>${fmt(oc.MONTO_OC)}</td>
+      <td>${oc.ARCHIVO_URL ? `<a class="nav-link" href="${oc.ARCHIVO_URL}" target="_blank">Ver PDF</a>` : '—'}</td>
+      <td>${oc.REGISTRADO_POR || ''}</td>
+    </tr>`).join('');
+}
+
+function renderTablaGastos() {
+  document.getElementById('tablaGastos').innerHTML = gastos.map((g) => `
+    <tr>
+      <td>${fechaCorta(g.FECHA)}</td>
+      <td>${g.CATEGORIA || ''}</td>
+      <td>${g.DESCRIPCION || ''}</td>
+      <td>${fmt(g.MONTO)}</td>
+      <td>${clienteDeCot(g.N_COT)}</td>
+      <td>${g.PROVEEDOR_BENEFICIARIO || ''}</td>
+    </tr>`).join('');
+}
+
+function renderTablaAnticipos() {
+  document.getElementById('tablaAnticipos').innerHTML = anticipos.map((a) => `
+    <tr>
+      <td>${a.CLIENTE_NOMBRE || a.RUT_CLIENTE}</td>
+      <td>${clienteDeCot(a.N_COT)}</td>
+      <td>${fechaCorta(a.FECHA)}</td>
+      <td>${fmt(a.MONTO)}</td>
+      <td>${a.CONCEPTO || ''}</td>
+    </tr>`).join('');
+}
+
 function cargarTodo() {
   return Promise.all([
     Api.get('registro'),
@@ -89,6 +136,9 @@ function cargarTodo() {
     anticipos = rAnticipos.ok ? rAnticipos.data : [];
     renderResumen();
     renderTablaCotizaciones();
+    renderTablaOC();
+    renderTablaGastos();
+    renderTablaAnticipos();
     poblarSelectCotizaciones('ocNCot', true);
     poblarSelectCotizaciones('gNCot', false);
     poblarSelectCotizaciones('aNCot', false);

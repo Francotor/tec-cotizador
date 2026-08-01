@@ -1,84 +1,78 @@
 # TEC Cotizador
 
-Sistema web de cotizaciones para TEC Ingeniería Eléctrica y Construcción SpA. Reemplaza el
-Excel (`TEC_Cotizaciones.xlsm`) para permitir que 3 personas trabajen en paralelo con
+Sistema web de cotizaciones y control de gestión para TEC Ingeniería Eléctrica y Construcción SpA.
+Reemplaza el Excel (`TEC_Cotizaciones.xlsm`) para permitir que 3 personas trabajen en paralelo con
 trazabilidad real y sin folios duplicados.
+
+**En producción:**
+- Frontend: https://francotor.github.io/tec-cotizador/
+- Datos: [Google Sheet](https://docs.google.com/spreadsheets/d/1k_jIp0qWRTFx1rGSsF_b6FNzf00T0BAs1F0oIuET-gI/edit)
 
 Ver [`docs/schema.md`](docs/schema.md) para el esquema completo de datos y la lógica de cálculo.
 
-## 1. Crear el Google Sheet
+## Estructura
 
-Crea un Spreadsheet nuevo (no reutilices el `.xlsm`) con 5 pestañas, exactamente con los
-encabezados de `docs/schema.md`, en este orden de columnas:
+- `frontend/index.html` — Registrar cotizaciones
+- `frontend/panel.html` — Panel de Control: seguimiento de estado, Órdenes de Compra, Gastos, Anticipos
+- `apps-script/` — Backend (Google Apps Script Web App)
 
-- `REGISTRO`
-- `ITEMS_COTIZACION`
-- `CLIENTES`
-- `CONTACTOS`
-- `TARIFAS_BASE`
-
-Migra los datos actuales:
-- `TARIFAS BASE` → `TARIFAS_BASE` (14 filas reales del Excel)
-- `CLIENTES` → `CLIENTES`
-- `CONTACTOS` → `CONTACTOS`
-- El histórico de `REGISTRO` del Excel puede migrarse a mano (son solo 2 filas), asignando
-  `REGISTRADO_POR = "Franco"` y `FECHA_REGISTRO` = hoy, ya que no existía ese dato antes.
-
-## 2. Publicar el backend (Apps Script)
+## Actualizar el backend (cada vez que cambien los archivos de `apps-script/`)
 
 1. Desde el Sheet: Extensiones → Apps Script.
-2. Copia los archivos de `apps-script/` (`Code.js`, `Folio.js`, `Clientes.js`, `Contactos.js`,
-   `Cotizaciones.js`, `Tarifas.js`, `Utils.js`, `appsscript.json`) al editor.
-3. Implementar → Nueva implementación → Tipo "Aplicación web".
-   - Ejecutar como: **Yo**
-   - Quién tiene acceso: **Cualquier usuario** (o "Cualquiera dentro de la organización" si
-     usas Google Workspace y quieres restringirlo)
-4. Copia la URL del Web App generada.
+2. Reemplaza el contenido de cada archivo por el de `apps-script/` (mismo nombre, sin la extensión
+   `.js` en el editor de Apps Script). Archivos actuales: `Utils`, `Clientes`, `Contactos`, `Tarifas`,
+   `Folio`, `Registro`, `OrdenesCompra`, `Gastos`, `Anticipos`, `Setup`, `Code`, y el manifest
+   `appsscript.json`.
+3. **Solo la primera vez** que agregues `Setup.js`: selecciona la función `inicializarHojasControl`
+   en el desplegable de funciones (arriba del editor) y dale **Ejecutar**. Esto crea las pestañas
+   `ORDENES_COMPRA`, `GASTOS` y `ANTICIPOS` si todavía no existen. Te va a pedir autorizar permisos
+   de Drive la primera vez (para poder guardar los PDF de las OC) — acéptalo.
+4. **Implementar → Gestionar implementaciones** → ícono de lápiz en la implementación activa →
+   en "Versión" elige **Nueva versión** → Implementar. (Si usas "Implementar → Nueva implementación"
+   en cambio de esto, se genera una URL distinta y hay que volver a actualizar `config.js`.)
+5. La URL del Web App no cambia al usar "Nueva versión", así que no hace falta tocar
+   `frontend/js/config.js`.
 
-## 3. Conectar el frontend
+## Conectar el frontend (solo la primera vez)
 
-Edita `frontend/js/config.js`:
+Editar `frontend/js/config.js`:
 
 ```js
 const API_URL = 'https://script.google.com/macros/s/XXXXX/exec';
-const USUARIOS = ['Franco', 'Felipe', 'Otro']; // ajustar nombres reales
+const USUARIOS = ['Franco', 'Felipe', 'Otro'];
 ```
 
-## 4. Probar en local
+## Probar en local
 
 ```bash
 py -m http.server 5502 --directory frontend
 ```
 
-Abrir `http://localhost:5502`.
+Abrir `http://localhost:5502` (cotizador) o `http://localhost:5502/panel.html` (panel de control).
 
-## 5. Publicar en GitHub Pages
-
-Repo dedicado (no mezclar con ElectroGestión):
+## Publicar cambios
 
 ```bash
-git init
-git add .
-git commit -m "Primera versión del cotizador TEC"
-git branch -M main
-git remote add origin https://github.com/francotor/tec-cotizador.git
-git push -u origin main
+git add -A
+git commit -m "mensaje"
+git push
 ```
 
-GitHub Pages no permite servir una subcarpeta arbitraria como `/frontend` con "Deploy from
-branch" (solo root o `/docs`), así que el repo incluye `.github/workflows/pages.yml`, que
-publica `frontend/` vía GitHub Actions. Solo falta activarlo:
+El push dispara `.github/workflows/pages.yml`, que publica `frontend/` en GitHub Pages
+automáticamente (Settings → Pages → Source debe estar en **GitHub Actions**).
 
-Settings → Pages → Source → **GitHub Actions** (no "Deploy from branch").
+## Sobre ElectroGestión
 
-El primer push ya dispara el workflow. Quedará en `https://francotor.github.io/tec-cotizador/`.
+Hay un prototipo visual separado (`Francotor/electrogestor-app`) sin backend real — sus datos están
+hardcodeados en el HTML. Tiene 6 planillas reales y bien diseñadas en Drive (Proyectos, OT,
+Materiales, Facturación, Equipo, Incidencias) que vale la pena reutilizar cuando se retome ese
+proyecto, conectándolas con Apps Script igual que aquí. La planilla "cotizaciones" que trae reservada
+es un template genérico sin relación con TEC — no usarla; en su lugar, cuando se conecte
+ElectroGestión, su sección de Cotizaciones debe apuntar a este mismo Sheet/Web App.
 
 ## Estado actual
 
-- [x] Estructura de carpetas y esquema de datos
-- [x] Backend Apps Script: folio atómico con LockService, upsert de clientes/contactos, registro de cotización
-- [x] Frontend: formulario completo, cálculo en vivo idéntico al Excel, autocompletado por RUT, ítems editables, impresión/PDF
-- [ ] Google Sheet real creado y poblado con los datos migrados
-- [ ] Web App desplegado y `API_URL` configurado
-- [ ] Prueba con los 3 usuarios en paralelo
-- [ ] Publicado en GitHub Pages
+- [x] Cotizador: formulario completo, folio atómico, cálculo idéntico al Excel, autocompletado por RUT, impresión/PDF
+- [x] Google Sheet en producción, backend desplegado, GitHub Pages publicado
+- [x] Panel de Control: cambiar estado de cotización, Órdenes de Compra (con adjunto PDF a Drive), Gastos (por categoría, opcionalmente ligados a una cotización), Anticipos de clientes (con o sin cotización asociada)
+- [ ] Conectar ElectroGestión a este mismo backend para la sección de Cotizaciones

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEC — Panel de Control</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="sheet">
+  <header>
+    <img src="assets/logo.png" alt="TEC Ingeniería Eléctrica y Construcción SpA">
+    <div class="info">
+      RUT: 77.216.898-5<br>
+      contacto@tecingenieria.cl<br>
+      +56 9 7562 9036 &nbsp;|&nbsp; +56 9 4074 0838<br>
+      Santa Isolina S/N, Tomé — Biobío
+    </div>
+  </header>
+
+  <div class="title-row">
+    <h1>PANEL DE CONTROL</h1>
+    <div class="meta">
+      <a class="nav-link" href="index.html">← Nueva cotización</a>
+    </div>
+  </div>
+
+  <section>
+    <h2 class="section-title">Resumen</h2>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Cotizaciones aprobadas sin OC</div>
+        <div class="stat-value" id="statSinOC">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total gastos registrados</div>
+        <div class="stat-value" id="statGastos">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total anticipos recibidos</div>
+        <div class="stat-value" id="statAnticipos">—</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Cotizaciones</h2>
+    <div class="filtro-row">
+      <label>Filtrar por estado</label>
+      <select id="filtroEstado">
+        <option value="">Todas</option>
+        <option value="PENDIENTE">Pendiente</option>
+        <option value="APROBADA">Aprobada</option>
+        <option value="RECHAZADA">Rechazada</option>
+        <option value="FACTURADA">Facturada</option>
+      </select>
+    </div>
+    <table>
+      <thead>
+        <tr><th>N°</th><th>Cliente</th><th>Proyecto</th><th>Total</th><th>Estado</th><th>OC</th></tr>
+      </thead>
+      <tbody id="tablaCotizaciones"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2 class="section-title">Registrar Orden de Compra</h2>
+    <div class="grid">
+      <div>
+        <label>Cotización aprobada</label>
+        <select id="ocNCot"></select>
+      </div>
+      <div>
+        <label>N° OC del cliente</label>
+        <input id="ocNumero" placeholder="Ej: OC-4521">
+      </div>
+      <div>
+        <label>Fecha de recepción</label>
+        <input type="date" id="ocFecha">
+      </div>
+      <div>
+        <label>Monto OC</label>
+        <input type="number" id="ocMonto" min="0">
+      </div>
+      <div>
+        <label>Archivo PDF (opcional)</label>
+        <input type="file" id="ocArchivo" accept="application/pdf">
+      </div>
+      <div>
+        <label>Registrado por</label>
+        <select id="ocRegistradoPor"></select>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <label>Observaciones</label>
+      <textarea id="ocObs" rows="2"></textarea>
+    </div>
+    <div class="actions" style="padding:14px 0 0;background:none;border:none;">
+      <button class="btn-primary" id="btnRegistrarOC">Registrar OC</button>
+    </div>
+    <div class="note" id="ocFeedback"></div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Registrar Gasto</h2>
+    <div class="grid">
+      <div>
+        <label>Fecha</label>
+        <input type="date" id="gFecha">
+      </div>
+      <div>
+        <label>Categoría</label>
+        <select id="gCategoria">
+          <option>Materiales</option>
+          <option>Remuneraciones</option>
+          <option>Otros</option>
+        </select>
+      </div>
+      <div>
+        <label>Descripción</label>
+        <input id="gDescripcion">
+      </div>
+      <div>
+        <label>Monto</label>
+        <input type="number" id="gMonto" min="0">
+      </div>
+      <div>
+        <label>Cotización / proyecto (opcional)</label>
+        <select id="gNCot"><option value="">— Gasto general —</option></select>
+      </div>
+      <div>
+        <label>Proveedor / beneficiario</label>
+        <input id="gProveedor">
+      </div>
+      <div>
+        <label>Registrado por</label>
+        <select id="gRegistradoPor"></select>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <label>Observaciones</label>
+      <textarea id="gObs" rows="2"></textarea>
+    </div>
+    <div class="actions" style="padding:14px 0 0;background:none;border:none;">
+      <button class="btn-primary" id="btnRegistrarGasto">Registrar gasto</button>
+    </div>
+    <div class="note" id="gFeedback"></div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Registrar Anticipo</h2>
+    <div class="grid">
+      <div>
+        <label>RUT cliente</label>
+        <input id="aRut" placeholder="77.494.541-5">
+      </div>
+      <div>
+        <label>Nombre cliente</label>
+        <input id="aNombre">
+      </div>
+      <div>
+        <label>Cotización asociada (opcional)</label>
+        <select id="aNCot"><option value="">— Sin cotización —</option></select>
+      </div>
+      <div>
+        <label>Fecha</label>
+        <input type="date" id="aFecha">
+      </div>
+      <div>
+        <label>Monto</label>
+        <input type="number" id="aMonto" min="0">
+      </div>
+      <div>
+        <label>Concepto</label>
+        <select id="aConcepto">
+          <option>Anticipo</option>
+          <option>Materiales</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div>
+        <label>Registrado por</label>
+        <select id="aRegistradoPor"></select>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <label>Observaciones</label>
+      <textarea id="aObs" rows="2"></textarea>
+    </div>
+    <div class="actions" style="padding:14px 0 0;background:none;border:none;">
+      <button class="btn-primary" id="btnRegistrarAnticipo">Registrar anticipo</button>
+    </div>
+    <div class="note" id="aFeedback"></div>
+  </section>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/calculo.js"></script>
+<script src="js/panel.js"></script>
+</body>
+</html>

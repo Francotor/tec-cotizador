@@ -1,6 +1,8 @@
 # Esquema de Google Sheets — TEC Cotizador
 
-Un solo Spreadsheet nuevo (no reutilizar el .xlsm) con 5 pestañas. Fila 1 = encabezados, datos desde fila 2.
+Un solo Spreadsheet (no reutilizar el .xlsm) con 8 pestañas. Fila 1 = encabezados, datos desde fila 2.
+Las últimas 3 (`ORDENES_COMPRA`, `GASTOS`, `ANTICIPOS`) son la extensión de control de gestión y las crea
+automáticamente `Setup.js` la primera vez que se ejecuta (no hace falta crearlas a mano).
 
 ## REGISTRO
 
@@ -64,6 +66,62 @@ Un solo Spreadsheet nuevo (no reutilizar el .xlsm) con 5 pestañas. Fila 1 = enc
 | C | PRECIO_REF | número | |
 | D | ULTIMA_ACTUALIZACION | texto | |
 | E | NOTAS | texto | |
+
+## ORDENES_COMPRA
+
+Registra la OC del cliente asociada a una cotización aprobada. Una cotización puede tener más de una OC
+(órdenes parciales).
+
+| # | Columna | Tipo | Notas |
+|---|---|---|---|
+| A | ID_OC | número | PK. Autoincremental (igual mecanismo que N_COT) |
+| B | N_COT | número | FK → REGISTRO.N_COT |
+| C | N_OC_CLIENTE | texto | N° de OC que emite el cliente (no es un folio nuestro) |
+| D | FECHA_RECEPCION | fecha | |
+| E | MONTO_OC | número | |
+| F | ARCHIVO_URL | texto (URL) | Link al PDF subido a Drive |
+| G | OBSERVACIONES | texto | |
+| H | REGISTRADO_POR | texto | |
+| I | FECHA_REGISTRO | timestamp | Auto |
+
+## GASTOS
+
+| # | Columna | Tipo | Notas |
+|---|---|---|---|
+| A | ID_GASTO | número | PK. Autoincremental |
+| B | FECHA | fecha | |
+| C | CATEGORIA | texto (enum) | Materiales / Remuneraciones / Otros |
+| D | DESCRIPCION | texto | |
+| E | MONTO | número | |
+| F | N_COT | número | FK opcional → REGISTRO.N_COT (vacío = gasto general, no ligado a un proyecto) |
+| G | PROVEEDOR_BENEFICIARIO | texto | |
+| H | OBSERVACIONES | texto | |
+| I | REGISTRADO_POR | texto | |
+| J | FECHA_REGISTRO | timestamp | Auto |
+
+## ANTICIPOS
+
+Abonos de clientes que no siempre están amarrados a una cotización formal (frecuente en clientes
+particulares).
+
+| # | Columna | Tipo | Notas |
+|---|---|---|---|
+| A | ID_ANTICIPO | número | PK. Autoincremental |
+| B | RUT_CLIENTE | texto | Requerido, aunque el cliente no exista en CLIENTES |
+| C | CLIENTE_NOMBRE | texto | Denormalizado, por si no está en CLIENTES |
+| D | N_COT | número | FK opcional → REGISTRO.N_COT |
+| E | FECHA | fecha | |
+| F | MONTO | número | |
+| G | CONCEPTO | texto (enum) | Anticipo / Materiales / Otro |
+| H | OBSERVACIONES | texto | |
+| I | REGISTRADO_POR | texto | |
+| J | FECHA_REGISTRO | timestamp | Auto |
+
+## Cotizaciones aprobadas sin OC
+
+No es una columna almacenada — el Panel de Control cruza `REGISTRO` (ESTADO = APROBADA) contra
+`ORDENES_COMPRA` (por N_COT) en el momento de mostrar la lista, y marca las que no tienen ninguna
+fila de OC asociada.
 
 ## Lógica de cálculo (idéntica al Excel original)
 

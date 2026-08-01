@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEC — Cotizador</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="sheet">
+  <header>
+    <img src="assets/logo.png" alt="TEC Ingeniería Eléctrica y Construcción SpA">
+    <div class="info">
+      RUT: 77.216.898-5<br>
+      contacto@tecingenieria.cl<br>
+      +56 9 7562 9036 &nbsp;|&nbsp; +56 9 4074 0838<br>
+      Santa Isolina S/N, Tomé — Biobío
+    </div>
+  </header>
+
+  <div class="title-row">
+    <h1>COTIZACIÓN</h1>
+    <div class="meta">
+      <div class="num" id="numCot">N° se asigna al registrar</div>
+      <div>Válida por 7 días hábiles &nbsp;·&nbsp; <span id="fecha"></span></div>
+    </div>
+  </div>
+
+  <section>
+    <h2 class="section-title">Registrado por</h2>
+    <div class="grid">
+      <div>
+        <label>Usuario</label>
+        <select id="registradoPor"></select>
+      </div>
+      <div>
+        <label>Tipo de documento</label>
+        <select id="tipoDocumento">
+          <option value="con_iva">Con IVA (19%)</option>
+          <option value="exento">Exento de IVA</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Datos del cliente</h2>
+    <div class="grid">
+      <div>
+        <label>RUT (ingrese aquí para autocompletar)</label>
+        <input id="rut" placeholder="77.494.541-5">
+        <div class="hint" id="rutHint"></div>
+      </div>
+      <div>
+        <label>Razón social / nombre</label>
+        <input id="razon" readonly>
+      </div>
+      <div>
+        <label>Dirección</label>
+        <input id="direccion" readonly>
+      </div>
+      <div>
+        <label>Ciudad / comuna</label>
+        <input id="ciudad" readonly>
+      </div>
+      <div>
+        <label>Contacto</label>
+        <select id="contacto"></select>
+      </div>
+      <div>
+        <label>Correo del contacto</label>
+        <input id="correo" readonly>
+      </div>
+      <div>
+        <label>Obra / proyecto</label>
+        <input id="proyecto" placeholder="Nombre del proyecto">
+      </div>
+      <div>
+        <label>Forma de pago</label>
+        <input id="formaPago" placeholder="Ej: 50% anticipo, 50% contra entrega">
+      </div>
+    </div>
+    <div class="grid" id="contactoNuevoFields" style="display:none; margin-top:10px;">
+      <div>
+        <label>Nombre del nuevo contacto</label>
+        <input id="contactoNombre">
+      </div>
+      <div>
+        <label>Teléfono</label>
+        <input id="contactoTelefono">
+      </div>
+      <div>
+        <label>Cargo / nota</label>
+        <input id="contactoCargo">
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Ítems</h2>
+    <table>
+      <thead>
+        <tr>
+          <th class="col-num">N°</th>
+          <th>Descripción del servicio / ítem</th>
+          <th class="col-und">Und</th>
+          <th class="col-cant">Cant.</th>
+          <th class="col-precio">V. unitario</th>
+          <th class="col-total">V. total</th>
+          <th class="col-del"></th>
+        </tr>
+      </thead>
+      <tbody id="items"></tbody>
+    </table>
+    <datalist id="tarifasList"></datalist>
+    <button type="button" class="btn-add-item" id="btnAddItem">+ Agregar ítem</button>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="grid" style="max-width:400px;">
+      <div>
+        <label>Gastos generales (%)</label>
+        <input type="number" id="ggPct" value="10">
+      </div>
+      <div>
+        <label>Utilidades (%)</label>
+        <input type="number" id="utPct" value="7">
+      </div>
+    </div>
+    <div class="totales">
+      <div><span>Neto parcial</span><span id="neto">$0</span></div>
+      <div><span>Gastos generales</span><span id="gg">$0</span></div>
+      <div><span>Utilidades</span><span id="ut">$0</span></div>
+      <div><span>IVA</span><span id="iva">$0</span></div>
+      <div class="final"><span>Total a pagar</span><span id="total">$0</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Observaciones</h2>
+    <textarea id="observaciones" rows="3" style="width:100%; font-family:inherit; font-size:13px; padding:7px 8px; border:1px solid #ddd; background:var(--bg-input); border-radius:3px;"></textarea>
+  </section>
+
+  <div class="firmas">
+    <div>
+      Franco Torres — Gerente General<br>
+      RUT: 17.710.477-9<br>
+      TEC Ingeniería Eléctrica y Construcción SpA
+    </div>
+    <div>
+      Nombre: ___________________________<br>
+      RUT: ______________________________<br>
+      Empresa / Persona: _________________
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-primary" id="btnRegistrar">Registrar cotización</button>
+    <button class="btn-secondary" id="btnImprimir">Imprimir / PDF</button>
+  </div>
+  <div class="note" id="feedback"></div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/calculo.js"></script>
+<script src="js/items.js"></script>
+<script src="js/clientes.js"></script>
+<script src="js/pdf.js"></script>
+<script src="js/cotizacion.js"></script>
+</body>
+</html>
